@@ -40,14 +40,12 @@ def purchase_history():
 	history_dict = {}
 	with open("purchases.txt") as f:
 		for line in f:
-			print(f"{line}")
 			(item, times) = line.split('-')
 			if item in history_dict:
 				history_dict[item] += int(times)
 			else:
 				history_dict[item] = int(times)
 	sort_history = sorted(history_dict.items(),key=lambda x:x[1], reverse=True)
-	print(sort_history)
 	print("\n  Purchase History:")
 	print("-----------------------\n")
 	print("Times purchased         Item ")
@@ -80,87 +78,105 @@ def print_items():
 	
 		
 # create a dictionary with items and their price
-mode = input("Hello, are costumer or manager?\n$ ")
-if mode == 'costumer':
-	print_items()
-	items_dict = {}
-	with open("items.txt") as f:
-		for line in f:
-		   (key, val) = line.split('-')
-		   items_dict[key] = int(val)
+valid = False
+while valid == False:
+	mode = input("Hello, are costumer or manager?\n$ ")
+	if mode == 'costumer':
+		valid = True
+		print_items()
+		items_dict = {}
+		with open("items.txt") as f:
+			for line in f:
+			   (key, val) = line.split('-')
+			   items_dict[key] = int(val)
 
-	#create dictionary for purchase	   
-	purchase_dict = {}
-	sum = 0
-	end  = False
-	print("Hello,")
-	while end == False:
-		new_item = input("what item would you like to purchase?\n$ ")
-		quantity = input("How many would you like to purchase?\n$ ")
-		purchase_dict[f"{new_item}"] = int(quantity)
-		answer = input("would you like to purchase something else? (yes/no)\n$ ")
-		if answer == 'yes': 
-			continue
-		else:
-			end = True
-
-	#calculate total		
-	for item in purchase_dict:
-		sum += (items_dict[item]*purchase_dict[item])
-
-	#print result
-	print("\n\nItem            Amount          Price")
-	print("-----           ------          ------")
-	for item in purchase_dict:
-		print(f"{item}           {purchase_dict[item]}               {items_dict[item]*purchase_dict[item]}")
-	print("-------------------------------------")
-	print(f"Your total is:                    {sum}")
-
-	with open("purchases.txt","a") as purchases:
-		for item in purchase_dict:
-			purchases.write(f"{item}-{purchase_dict[item]}")
-			purchases.write("\n")
-			
-	# with open("purchases.txt","r") as purchases:
-		# content = purchases.read()
-	# print(content)
-
-	suggestions = open("suggestions.txt","a")
-	ratings = open("ratings.txt","a")
-	ans = input("\nWould you like  to submit a review of the supermarket? (yes/no)\n$ ")
-	if ans == 'yes':
-		prop = input("\nWould you like to propose a new item? (yes/no)\n$ ")
-		if prop == 'yes':
-			con = True
-			while con == True:
-				item_prop = input("\nWhat item would you like to propose?\n$ ")
-				suggestions.write(f"{item_prop}")
-				suggestions.write("\n")
-				again = input("\nWould you like to propose another item? (yes/no)\n$ ")
-				if again == 'yes':
+		#create dictionary for purchase	   
+		purchase_dict = {}
+		sum = 0
+		end  = False
+		print("Hello,")
+		while end == False:
+			new_item = input("what item would you like to purchase?\n$ ")
+			if new_item in items_dict:
+				quantity = input("How many would you like to purchase?\n$ ")
+				purchase_dict[f"{new_item}"] = int(quantity)
+				answer = input("would you like to purchase something else? (yes/no)\n$ ")
+				if answer == 'yes': 
 					continue
-				elif again == 'no':
-					con == False
-					break
-					
-		rating = int(input("How much would you rate the supermarket from 1 to 5?\n$ "))
-		ratings.write(f"{rating}-")
-								
-		comment = input("Tell us your review on the supermarket\n$ ")
-		ratings.write(f"{comment}")
-		ratings.write("\n")
+				else:
+					end = True
+			else:
+				print("Item not found")
 
-		print("\nThank you for your time!")
-	print("\nSee you next time!")
-	suggestions.close()
-	ratings.close()
-elif mode == 'manager':
-	print("Would you like to:\n(1) Print purchase history\n(2) Print ratings and item suggestions")
-	type = input("$ ")
-	if type == '1':
-		purchase_history()
-	elif type == '2':
-		clients_feedback()
+		#calculate total		
+		for item in purchase_dict:
+			sum += (items_dict[item]*purchase_dict[item])
+
+		#print result
+		print("\n\nItem            Amount          Price")
+		print("-----           ------          ------")
+		for item in purchase_dict:
+			print(f"{item}           {purchase_dict[item]}               {items_dict[item]*purchase_dict[item]}")
+		print("-------------------------------------")
+		print(f"Your total is:                    {sum}")
+
+		with open("purchases.txt","a") as purchases:
+			for item in purchase_dict:
+				purchases.write(f"{item}-{purchase_dict[item]}")
+				purchases.write("\n")
+				
+		# with open("purchases.txt","r") as purchases:
+			# content = purchases.read()
+		# print(content)
+
+		suggestions = open("suggestions.txt","a")
+		ratings = open("ratings.txt","a")
+		ans = input("\nWould you like  to submit a review of the supermarket? (yes/no)\n$ ")
+		if ans == 'yes':
+			prop = input("\nWould you like to propose a new item? (yes/no)\n$ ")
+			if prop == 'yes':
+				con = True
+				while con == True:
+					item_prop = input("\nWhat item would you like to propose?\n$ ")
+					suggestions.write(f"{item_prop}")
+					suggestions.write("\n")
+					again = input("\nWould you like to propose another item? (yes/no)\n$ ")
+					if again == 'yes':
+						continue
+					elif again == 'no':
+						con == False
+						break
+			rate_in_range = False
+			while rate_in_range == False:
+				rating = int(input("How much would you rate the supermarket from 1 to 5?\n$ "))
+				if rating >=1 and rating <=5:
+					ratings.write(f"{rating}-")
+					rate_in_range = True
+				else:
+					print("Rating is not in range")
+				
+									
+			comment = input("Tell us your review on the supermarket\n$ ")
+			ratings.write(f"{comment}")
+			ratings.write("\n")
+
+			print("\nThank you for your time!")
+		print("\nSee you next time!")
+		suggestions.close()
+		ratings.close()
+		
+	elif mode == 'manager':
+		valid = True
+		print("Would you like to:\n(1) Print purchase history\n(2) Print ratings and item suggestions")
+		type = input("$ ")
+		if type == '1':
+			purchase_history()
+		elif type == '2':
+			clients_feedback()
+	
+	else:
+		print("Try again")
+		continue
 
 
 		

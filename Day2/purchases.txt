@@ -34,3 +34,8 @@ carrot-4
 carrot-3
 leaf-2
 carrot-1
+carrot-2
+maple-1
+paste-2
+banana-1
+corn-3
